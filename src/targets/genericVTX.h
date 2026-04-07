@@ -3,6 +3,7 @@
 //#define USE_COLOR
 //#define USE_HD
 #define USE_GRAPHICS
+#define USE_USB
 
 
 //General

@@ -30,6 +30,7 @@
 #include <sys/times.h>
 #include <time.h>
 #include <usb.h>
+#include "main.h"
 
 /* Variables */
 extern int __io_putchar(int ch) __attribute__((weak));
@@ -82,7 +83,11 @@ __attribute__((weak)) int _write(int file, char *ptr, int len)
   (void)file;
   // int DataIdx;
 
+  #if defined(USE_USB)
   usb_uart_write_bytes(ptr, len);
+  #else
+  UNUSED(ptr);
+  #endif
 
   // for (DataIdx = 0; DataIdx < len; DataIdx++)
   // {

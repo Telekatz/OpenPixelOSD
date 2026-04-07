@@ -102,7 +102,9 @@ EXEC_RAM bool msp_displayport_handle_msp(uint8_t owner, uint16_t msp_cmd, uint16
                         uart1_tx_dma(tx_buff, len);
                         break;
                     case MSP_OWNER_USB:
+                        #if defined(USE_USB)
                         usb_uart_write_bytes((const char *)tx_buff, len);
+                        #endif
                         break;
                     default:
                         break;

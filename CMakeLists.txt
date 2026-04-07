@@ -134,6 +134,11 @@ elseif(BUILD_VARIANT STREQUAL "PIXELVTX_COLOR")
     set(BUILD_NAME "_pixelVTXcolor")
     add_compile_definitions(TARGET_PIXELVTX_COLOR)
 
+elseif(BUILD_VARIANT STREQUAL "OPENOSDX")
+    message(STATUS "Building openOSD-X")
+    set(BUILD_NAME "_pixelVTXcolor")
+    add_compile_definitions(TARGET_OPENOSDX)
+
 else()
   message(STATUS "Building generic target")
 

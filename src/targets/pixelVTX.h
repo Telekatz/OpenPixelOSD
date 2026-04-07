@@ -2,6 +2,7 @@
 
 #define USE_VTX
 #define USE_HD
+#define USE_USB
 //#define USE_RUNCAM
 
 #define SPI2_CS_Pin                             LL_GPIO_PIN_7

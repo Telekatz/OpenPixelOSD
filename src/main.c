@@ -109,7 +109,9 @@ int main (void)
     TRACE_INFO("Compiled: %s %s --\n", __DATE__, __TIME__);
     #endif
     gpio_init();
+#if defined(USE_USB)
     usb_init();
+#endif
     dma_init();
     led_init();
     adc_init();

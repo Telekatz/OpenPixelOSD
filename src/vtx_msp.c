@@ -98,7 +98,9 @@ void vtx_set_pitmode(uint8_t pitmode)
 static inline void msp_tx_send(uint8_t owner, const uint8_t *buf, uint16_t len)
 {
     if (owner == MSP_OWNER_USB) {
+        #if defined(USE_USB)
         usb_uart_write_bytes((const char*)buf, len);
+        #endif
     } else if (owner == MSP_OWNER_UART) {
         uart1_tx_dma((uint8_t*)buf, len);
     }

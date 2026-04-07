@@ -9,6 +9,7 @@
 #include "usb_device.h"
 #include "usbd_cdc_if.h"
 
+#if defined(USE_USB)
 
 #define RX_BUFFER_SIZE 256 // can be reduced to save RAM
 #define TX_BUFFER_SIZE 256
@@ -224,3 +225,4 @@ void TIM7_DAC_IRQHandler(void)
         usb_connected_prev = usb_connected;
     }
 }
+#endif

@@ -4,6 +4,7 @@
 #define USE_HD
 #define USE_GRAPHICS
 #define USE_VTX
+#define USE_USB
 #define USE_RUNCAM
 
 //General

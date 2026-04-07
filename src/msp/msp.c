@@ -354,7 +354,9 @@ uint16_t construct_msp_command_v2(uint8_t message_buffer[], uint16_t function, c
 void msp_tx_send_owner(uint8_t owner, const uint8_t *buf, uint16_t len)
 {
     if (owner == MSP_OWNER_USB) {
+        #if defined(USE_USB)
         usb_uart_write_bytes((const char*)buf, len);
+        #endif
     } else if (owner == MSP_OWNER_UART) {
         uart1_tx_dma((uint8_t*)buf, len);
     }
@@ -373,9 +375,11 @@ EXEC_RAM void msp_loop_process(void)
     while (uart1_rx_ring_get(&byte)) {
         msp_process_received_data(&msp_uart, byte);
     }
+    #if defined(USE_USB)
     while (usb_uart_read_byte(&byte)) {
         msp_process_received_data(&msp_usb, byte);
     }
+    #endif
 
     static uint32_t last_tick = 0;
     static uint8_t configRequest = 2;
