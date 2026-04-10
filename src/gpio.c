@@ -14,6 +14,7 @@ void gpio_init(void)
     LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOA);
     LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOB);
 
+#ifdef LED_STATE_Pin
     /**/
     // LED on by default, so that correct flashing and the boot process can be observed.
     LL_GPIO_SetOutputPin(LED_STATE_GPIO_Port, LED_STATE_Pin);
@@ -23,6 +24,7 @@ void gpio_init(void)
     GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
     GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
     LL_GPIO_Init(USER_KEY_GPIO_Port, &GPIO_InitStruct);
+#endif
 
 #if defined(USE_VTX)
     LL_GPIO_ResetOutputPin(SPI2_CS_GPIO_Port, SPI2_CS_Pin);
@@ -50,6 +52,7 @@ void gpio_init(void)
     LL_GPIO_Init(SPI2_SCK_GPIO_Port, &GPIO_InitStruct);
 #endif
 
+#ifdef LED_STATE_Pin
     /**/
     GPIO_InitStruct.Pin = LED_STATE_Pin;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
@@ -57,6 +60,7 @@ void gpio_init(void)
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
     GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
     LL_GPIO_Init(LED_STATE_GPIO_Port, &GPIO_InitStruct);
+#endif
 
 #if defined(PA_ON_Pin)
     LL_GPIO_ResetOutputPin(PA_ON_GPIO_Port, PA_ON_Pin);
@@ -97,11 +101,14 @@ void gpio_init(void)
     GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
     LL_GPIO_Init(TP2_GPIO_Port, &GPIO_InitStruct);
 #endif
+
+#if defined(BOOT_KEY_Pin)
     /**/
     GPIO_InitStruct.Pin = BOOT_KEY_Pin;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
     GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
     LL_GPIO_Init(BOOT_KEY_GPIO_Port, &GPIO_InitStruct);
+#endif
 
     /* Pull down PA12 to create USB disconnect pulse */
     LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_12);

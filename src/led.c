@@ -21,9 +21,11 @@ void led_set(uint8_t idx, uint32_t value) {
 
     rgbLed[idx] = value;
     return;
+  #ifdef LED_STATE_Pin
   } else if (idx == LED_STATE) {
     GPIOx = LED_STATE_GPIO_Port;
     PinMask = LED_STATE_Pin;
+  #endif
   #ifdef TP1_Pin
   } else if (idx == TP1) {
     GPIOx = TP1_GPIO_Port;
@@ -53,9 +55,11 @@ void led_toggle(uint8_t idx) {
   if(idx < RGB_LED_COUNT) {
     rgbLed[idx] ^= RGB_TOGGLE_BIT;
     return;
+  #ifdef LED_STATE_Pin
   } else if (idx == LED_STATE) {
     GPIOx = LED_STATE_GPIO_Port;
     PinMask = LED_STATE_Pin;
+  #endif
   #ifdef TP1_Pin
   } else if (idx == TP1) {
     GPIOx = TP1_GPIO_Port;

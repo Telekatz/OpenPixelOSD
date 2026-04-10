@@ -62,6 +62,7 @@ void msp_draw_system(uint8_t row, uint8_t col, uint8_t element) {
       break;
     case DISPLAYPORT_SYS_LQ:
       {
+        #if defined(USE_VTX)
         if(vtx_get_config()->pitmode) {
           snprintf(buffer, sizeof(buffer), "V%c%i   ", 0x15, vtx_get_power_mw());
         } else {
@@ -69,6 +70,7 @@ void msp_draw_system(uint8_t row, uint8_t col, uint8_t element) {
         }
         
         canvas_char_write(col, row, (const char *)&buffer[0], 5, 0);
+        #endif
       }
       break;
     default:
