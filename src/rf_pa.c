@@ -404,11 +404,27 @@ uint16_t rf_pa_read_vdet_mv(void)
  * manufacturer -- check your actual NTC's datasheet and update it, or
  * this will be systematically off (a wrong Beta shifts the whole curve,
  * it doesn't just add noise). */
-#define NTC_R0_OHM     10000.0f   // NTC resistance at 25C (R25)
-#define NTC_T0_K       298.15f    // 25C in Kelvin
-#define NTC_BETA       3950.0f    // verify against your NTC's actual datasheet
-#define NTC_PULLUP_OHM 10000.0f
+
+#if defined(USE_NTC_PRESET_NTCG103JX103DTDS)
+// https://product.tdk.com/system/files/dam/doc/product/sensor/ntc/chip-ntc-thermistor/data_sheet/datasheet_ntcg103jx103dtds.pdf
+#define NTC_R0_OHM     10000.0f   // NTC resistance at 25C
+#define NTC_BETA       3435.0f    // at 25/85C
+#define NTC_PULLUP_OHM 10000.0f   // NTC pullup resistor
+#endif
+
+#if defined(USE_NTC_PRESET_NCU18WF104F6SRB)
+// https://pim.murata.com/en-us/pim/details/?partNum=NCU18WF104F6SRB&displayChangeClass=productDetailPrint
+#define NTC_R0_OHM     100000.0f  // NTC resistance at 25C
+#define NTC_BETA       4311.0f    // at 25/85C
+#define NTC_PULLUP_OHM 10000.0f   // NTC pullup resistor
+#endif
+
+#if !defined(NTC_R0_OHM) || !defined(NTC_BETA) || !defined(NTC_PULLUP_OHM)
+#error "NTC configuration not defined - Use a preset NTC configuration or define fully in your target"
+#endif
+
 #define NTC_ADC_FULL_SCALE 4095u  // 12-bit
+#define NTC_T0_K       298.15f    // 25C in Kelvin
 
 float rf_pa_ntc_raw_to_celsius(uint16_t adc_raw)
 {
