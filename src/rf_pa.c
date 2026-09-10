@@ -482,7 +482,7 @@ void debug_pa_loop(float p, float i, float d, float error, uint16_t vdet_mv, uin
                         default:
                             continue;
                     }
-                    canvas_char_write(1, ROW_OFFSET + row, buffer, strlen(buffer));
+                    canvas_char_write(1, ROW_OFFSET + row, buffer, strlen(buffer),0);
                 } break;
                 case 1: {
                     switch (row) {
@@ -493,7 +493,7 @@ void debug_pa_loop(float p, float i, float d, float error, uint16_t vdet_mv, uin
                         default:
                             continue;
                     }
-                    canvas_char_write(COLUMN_SIZE - strlen(buffer) - 1, ROW_OFFSET + row, buffer, strlen(buffer));
+                    canvas_char_write(COLUMN_SIZE - strlen(buffer) - 1, ROW_OFFSET + row, buffer, strlen(buffer),0);
 
 
                 } break;
