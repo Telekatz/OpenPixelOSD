@@ -89,6 +89,10 @@ typedef enum {
 #define ADC_NTC_Channel LL_ADC_CHANNEL_12
 #define ADC_NTC_INSTANCE     ADC_INSTANCE_1
 
+// Chose an NTC preset, or define your own, refer to the definition of the presets in the source.
+#define USE_NTC_PRESET_NCU18WF104F6SRB
+//#define USE_NTC_PRESET_NCU18WF104F6SRB
+
 #define ADC_PA_VDET_Pin LL_GPIO_PIN_11
 #define ADC_PA_VDET_GPIO_Port GPIOB
 #define ADC_PA_VDET_Channel LL_ADC_CHANNEL_14

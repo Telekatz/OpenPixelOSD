@@ -141,27 +141,36 @@ static float lerp(float x, float in_min, float in_max, float out_min, float out_
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
+// Safety: Requires g_vtx_cal_freq_point_count >= 2
 static uint8_t cal_freq_index(uint16_t freq)
 {
-    if (freq < g_vtx_power_levels[0].calibration[0]) freq = g_vtx_power_levels[0].calibration[0];
-    if (freq > g_vtx_power_levels[0].calibration[VTX_CAL_FREQ_POINTS - 1]) freq = g_vtx_power_levels[0].calibration[VTX_CAL_FREQ_POINTS - 1];
-    for (uint8_t i = 0; i < VTX_CAL_FREQ_POINTS - 1; i++) {
-        if (freq < g_vtx_power_levels[0].calibration[i + 1]) return i;
+    const uint8_t last = g_vtx_cal_freq_point_count - 1;
+    if (freq < g_vtx_cal_frequencies_mhz[0]) freq = g_vtx_cal_frequencies_mhz[0];
+    if (freq > g_vtx_cal_frequencies_mhz[last]) freq = g_vtx_cal_frequencies_mhz[last];
+    for (uint8_t i = 0; i < last; i++) {
+        if (freq < g_vtx_cal_frequencies_mhz[i + 1]) return i;
     }
-    return VTX_CAL_FREQ_POINTS - 2;
+    return last - 1;
 }
 
 static uint16_t get_calibration_mv(const vtx_power_level_t *lvl, uint16_t freq)
 {
+    if (g_vtx_cal_freq_point_count < 2) {
+        return lvl->calibration[0];
+    }
+
     uint8_t i = cal_freq_index(freq);
-    return (uint16_t)lerp(freq, g_vtx_power_levels[0].calibration[i], g_vtx_power_levels[0].calibration[i + 1],
+    return (uint16_t)lerp(freq, g_vtx_cal_frequencies_mhz[i], g_vtx_cal_frequencies_mhz[i + 1],
                            lvl->calibration[i], lvl->calibration[i + 1]);
 }
 
 static uint16_t get_detector_target(const vtx_power_level_t *lvl, uint16_t freq)
 {
+    if (g_vtx_cal_freq_point_count < 2) {
+        return lvl->detector[0];
+    }
     uint8_t i = cal_freq_index(freq);
-    return (uint16_t)lerp(freq, g_vtx_power_levels[0].calibration[i], g_vtx_power_levels[0].calibration[i + 1],
+    return (uint16_t)lerp(freq, g_vtx_cal_frequencies_mhz[i], g_vtx_cal_frequencies_mhz[i + 1],
                            lvl->detector[i], lvl->detector[i + 1]);
 }
 
@@ -404,11 +413,27 @@ uint16_t rf_pa_read_vdet_mv(void)
  * manufacturer -- check your actual NTC's datasheet and update it, or
  * this will be systematically off (a wrong Beta shifts the whole curve,
  * it doesn't just add noise). */
-#define NTC_R0_OHM     10000.0f   // NTC resistance at 25C (R25)
-#define NTC_T0_K       298.15f    // 25C in Kelvin
-#define NTC_BETA       3950.0f    // verify against your NTC's actual datasheet
-#define NTC_PULLUP_OHM 10000.0f
+
+#if defined(USE_NTC_PRESET_NTCG103JX103DTDS)
+// https://product.tdk.com/system/files/dam/doc/product/sensor/ntc/chip-ntc-thermistor/data_sheet/datasheet_ntcg103jx103dtds.pdf
+#define NTC_R0_OHM     10000.0f   // NTC resistance at 25C
+#define NTC_BETA       3435.0f    // at 25/85C
+#define NTC_PULLUP_OHM 10000.0f   // NTC pullup resistor
+#endif
+
+#if defined(USE_NTC_PRESET_NCU18WF104F6SRB)
+// https://pim.murata.com/en-us/pim/details/?partNum=NCU18WF104F6SRB&displayChangeClass=productDetailPrint
+#define NTC_R0_OHM     100000.0f  // NTC resistance at 25C
+#define NTC_BETA       4311.0f    // at 25/85C
+#define NTC_PULLUP_OHM 10000.0f   // NTC pullup resistor
+#endif
+
+#if !defined(NTC_R0_OHM) || !defined(NTC_BETA) || !defined(NTC_PULLUP_OHM)
+#error "NTC configuration not defined - Use a preset NTC configuration or define fully in your target"
+#endif
+
 #define NTC_ADC_FULL_SCALE 4095u  // 12-bit
+#define NTC_T0_K       298.15f    // 25C in Kelvin
 
 float rf_pa_ntc_raw_to_celsius(uint16_t adc_raw)
 {

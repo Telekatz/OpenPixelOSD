@@ -115,6 +115,10 @@ typedef enum {
 #define ADC_NTC_Channel LL_ADC_CHANNEL_12
 #define ADC_NTC_INSTANCE ADC_INSTANCE_2
 
+// Chose an NTC preset, or define your own, refer to the definition of the presets in the source.
+#define USE_NTC_PRESET_NCU18WF104F6SRB
+//#define USE_NTC_PRESET_NCU18WF104F6SRB
+
 // PA output-power detector (VPD) on PA4 / ADC2_IN17 -- NOT reachable from
 // ADC1. Setting ADC_PA_VDET_INSTANCE to ADC2 is what makes main.h derive
 // ADC2_NEEDED and adc.c bring ADC2 up.
